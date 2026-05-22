@@ -1,0 +1,44 @@
+using UnityEngine;
+
+public class Enemy : MonoBehaviour
+{
+    private EnemyStats stats;
+
+    private Vector2 direction;
+
+    private float currentHealth;
+
+    private Rigidbody2D rb;
+
+    private Transform player;
+
+    private void Awake()
+    {
+        stats = GetComponent<EnemyStats>();
+        currentHealth = stats.maxHealth;
+        rb = GetComponent<Rigidbody2D>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+
+    }
+
+    private void FixedUpdate()
+    {
+        direction = (player.position - transform.position).normalized;
+        rb.linearVelocity = direction * stats.moveSpeed;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
+    }
+}
