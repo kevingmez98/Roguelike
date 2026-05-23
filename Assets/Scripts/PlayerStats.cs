@@ -6,4 +6,5 @@ public class PlayerStats : MonoBehaviour
     public float fireRate = 0.2f;
     public float bulletSpeed = 10f;
     public float damage = 1f;
+    public float range = 3f;
 }

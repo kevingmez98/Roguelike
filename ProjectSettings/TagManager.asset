@@ -8,17 +8,17 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - Player
-  - Bullet
-  - Enemies
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Enemy
+  - FlyingEnemy
+  - PlayerBullet
+  - EnemyBullet
+  - Wall
+  - Obstacle
+  - Destructible
+  - Pickup
   - 
   - 
   - 

@@ -2,18 +2,37 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    [Header("Stats")]
     public float speed = 10f;
 
     public float damage = 1f;
 
-    private Rigidbody2D rb;
-    private Vector2 direction;
+    public float range = 5f;
 
+
+    [HideInInspector]
+    public Vector2 direction;
+    private Rigidbody2D rb;
+    
+
+    private Vector2 startPosition;
+
+    private BulletMovement movement;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        movement = GetComponent<BulletMovement>();
     }
+
+    private void Start()
+    {
+        movement.Initialize(this);
+
+        float lifetime = range / speed;
+
+        Destroy(gameObject, lifetime);
+    }
+
 
     public void SetDirection(Vector2 dir)
     {
@@ -22,13 +41,7 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        rb.linearVelocity = direction * speed;
-        //  transform.position += (Vector3)(direction * speed * Time.deltaTime);
-    }
-
-    private void Start()
-    {
-        Destroy(gameObject, 3f);
+        movement.Move();
     }
 
 
@@ -39,11 +52,10 @@ public class Bullet : MonoBehaviour
 
         if (enemy != null)
         {
-            Debug.Log("Pega");
             enemy.TakeDamage(damage);
-
-            Destroy(gameObject);
         }
+
+           Destroy(gameObject);
     }
     public void SetSpeed(float speed)
     {
@@ -53,5 +65,10 @@ public class Bullet : MonoBehaviour
     public void SetDamage(float damage)
     {
         this.damage = damage;
+    }
+
+        public void SetRange(float range)
+    {
+        this.range = range;
     }
 }

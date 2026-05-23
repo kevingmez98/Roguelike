@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour
         );
         bullet.GetComponent<Bullet>().SetDamage(stats.damage);
         bullet.GetComponent<Bullet>().SetSpeed(stats.bulletSpeed);
+        bullet.GetComponent<Bullet>().SetRange(stats.range);
         bullet.GetComponent<Bullet>().SetDirection(direction);
     }
 }
