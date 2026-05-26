@@ -47,12 +47,14 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Verificar si la colision se hizo con un enemigo
-        Enemy enemy = collision.GetComponent<Enemy>();
+        // Verificar si la colision se hizo con un elemento que puede recibir daño
+        IDamageable damageable =
+            collision.GetComponent<IDamageable>();
 
-        if (enemy != null)
+
+        if (damageable != null)
         {
-            enemy.TakeDamage(damage);
+            damageable.TakeDamage(damage);
         }
 
            Destroy(gameObject);

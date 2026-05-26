@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     private EnemyStats stats;
 
@@ -34,6 +34,18 @@ public class Enemy : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+        }
+    }
+
+    // Metodo para hacer daño
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        PlayerController player =
+            collision.gameObject.GetComponent<PlayerController>();
+
+        if (player != null)
+        {
+            player.TakeDamage(stats.contactDamage);
         }
     }
 

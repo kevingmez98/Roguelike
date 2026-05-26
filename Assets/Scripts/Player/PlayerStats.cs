@@ -7,4 +7,9 @@ public class PlayerStats : MonoBehaviour
     public float bulletSpeed = 10f;
     public float damage = 1f;
     public float range = 3f;
+
+    public float speed = 5f;
+
+    public float maxHealth = 6;
+    public int coins = 0;
 }

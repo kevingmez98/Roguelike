@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.InputSystem;
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     private PlayerInputActions inputActions;
     private Vector2 moveInput;
@@ -8,22 +9,29 @@ public class PlayerController : MonoBehaviour
     private Vector2 shootInput;
 
     private Rigidbody2D rb;
-    public GameObject bulletPrefab;
-    public Transform firePoint;
+
 
     private PlayerStats stats;
+
+    private bool isInvulnerable;
+
+    public float invulnerabilityTime = 1f;
     public float fireCooldown = 0.2f;
+
+    public GameObject bulletPrefab;
 
     private float fireTimer;
 
-    public float speed = 5f;
+    public Transform firePoint;
 
+    public float currentHealth;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<PlayerStats>();
+        currentHealth = stats.maxHealth;
     }
 
     private void OnEnable()
@@ -76,5 +84,44 @@ public class PlayerController : MonoBehaviour
         bullet.GetComponent<Bullet>().SetSpeed(stats.bulletSpeed);
         bullet.GetComponent<Bullet>().SetRange(stats.range);
         bullet.GetComponent<Bullet>().SetDirection(direction);
+    }
+
+    // Rutina para cambiar el estado de invulnerabilidad cuando termine el tiempo
+    private IEnumerator InvulnerabilityCoroutine()
+    {
+        isInvulnerable = true;
+
+        yield return new WaitForSeconds(invulnerabilityTime);
+
+        isInvulnerable = false;
+    }
+    public void TakeDamage(float damage)
+    {
+        if (isInvulnerable)
+            return;
+
+        currentHealth -= damage;
+
+        StartCoroutine(InvulnerabilityCoroutine());
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Muelto");
+        }
+    }
+
+    public void Heal(int healAmount)
+    {
+        var totalHealth = currentHealth + healAmount;
+        if (totalHealth > stats.maxHealth)
+        {
+            currentHealth = stats.maxHealth;
+        }
+        currentHealth = totalHealth;
+    }
+
+    public void AddCoins(int amount)
+    {
+        stats.coins += amount; 
     }
 }

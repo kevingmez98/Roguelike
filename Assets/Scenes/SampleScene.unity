@@ -290,10 +290,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a76d061cf3b2a3e46a05c926a9696269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  invulnerabilityTime: 1
+  fireCooldown: 0.2
   bulletPrefab: {fileID: 114154863923368206, guid: 4a918c8b0f28a31409167a360da0607e, type: 3}
   firePoint: {fileID: 279207165}
-  fireCooldown: 0.2
-  speed: 5
+  currentHealth: 0
 --- !u!114 &72480874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,6 +312,9 @@ MonoBehaviour:
   bulletSpeed: 10
   damage: 1
   range: 5
+  speed: 5
+  maxHealth: 6
+  coins: 0
 --- !u!1 &260527191
 GameObject:
   m_ObjectHideFlags: 0
@@ -977,7 +981,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   moveSpeed: 2
   maxHealth: 6
-  contactDamage: 1
+  contactDamage: 3
 --- !u!58 &1185452226
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1263,6 +1267,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1545833645}
   - component: {fileID: 1545833644}
+  - component: {fileID: 1545833647}
   - component: {fileID: 1545833646}
   m_Layer: 12
   m_Name: Square (1)
@@ -1391,6 +1396,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1545833647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545833643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e99429f4fe00384698114552e1827e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Destructible
+  maxHealth: 3
 --- !u!1 &1799636719
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,6 +1695,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1950540995}
   - component: {fileID: 1950540994}
+  - component: {fileID: 1950540997}
   - component: {fileID: 1950540996}
   m_Layer: 13
   m_Name: Square (2)
@@ -1789,7 +1808,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -1805,6 +1824,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1950540997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950540993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae795f062c9fe904286d05969ae7ec5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthPickup
+  healAmount: 100
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
