@@ -12,6 +12,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private Transform player;
 
+    private Room currentRoom;
+
     private void Awake()
     {
         stats = GetComponent<EnemyStats>();
@@ -49,8 +51,17 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
+    public void SetRoom(Room room)
+    {
+        currentRoom = room;
+    }
+
     private void Die()
     {
+        if (currentRoom != null)
+        {
+            currentRoom.EnemyDied(this);
+        }
         Destroy(gameObject);
     }
 }
