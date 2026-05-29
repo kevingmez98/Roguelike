@@ -6,6 +6,9 @@ public class Room : MonoBehaviour
     public List<Door> doors;
     public List<Enemy> enemies;
 
+    public Transform cameraTarget;
+    public Transform CameraTarget => cameraTarget;
+
     private bool roomCompleted = false;
     private bool playerInside = false;
 
