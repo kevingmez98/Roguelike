@@ -6,16 +6,38 @@ public class Room : MonoBehaviour
     public List<Door> doors;
     public List<Enemy> enemies;
 
+    public RoomType roomType;
+
     public Transform cameraTarget;
     public Transform CameraTarget => cameraTarget;
 
-    private bool roomCompleted = false;
-    private bool playerInside = false;
+    private RoomState roomState;
 
+
+    [SerializeField]
+    private Transform rewardSpawnPoint;
+
+    [SerializeField]
+    private GameObject[] rewardPrefabs;
 
     private void Awake()
     {
         RegisterEnemies();
+        roomState = RoomState.Unvisited;
+    }
+
+    private void Start()
+    {
+        if (roomType != RoomType.Start)
+            return;
+
+        Camera.main.transform.position = new Vector3(
+            cameraTarget.position.x,
+            cameraTarget.position.y,
+            Camera.main.transform.position.z
+        );
+
+        OnPlayerEntered();
     }
     private void RegisterEnemies()
     {
@@ -33,19 +55,29 @@ public class Room : MonoBehaviour
     }
     public void OnPlayerEntered()
     {
-        if (playerInside)
-            return;
 
-        playerInside = true;
+        switch (roomState)
+        {
+            case RoomState.Unvisited:
+                roomState = RoomState.Active;
 
-        if (roomCompleted)
-            return;
+                CloseDoors();
+                ActivateEnemies();
+                Debug.Log("Combat started");
 
-        CloseDoors();
+                break;
 
-        ActivateEnemies();
+            case RoomState.Active:
 
-        Debug.Log("Combat started");
+                CloseDoors();
+
+                break;
+
+            case RoomState.Cleared:
+
+                break;
+        }
+
     }
 
     public void EnemyDied(Enemy enemy)
@@ -54,17 +86,16 @@ public class Room : MonoBehaviour
 
         Debug.Log("Enemy defeated");
 
-        if (enemies.Count <= 0)
-        {
-            CompleteRoom();
-        }
+        CheckCompletion();
     }
 
     private void CompleteRoom()
     {
-        roomCompleted = true;
+        roomState = RoomState.Cleared;
 
         OpenDoors();
+
+        SpawnReward();
 
         Debug.Log("Room completed");
     }
@@ -90,5 +121,24 @@ public class Room : MonoBehaviour
         {
             enemy.gameObject.SetActive(true);
         }
+    }
+
+    private void CheckCompletion()
+    {
+        if (enemies.Count == 0)
+        {
+            CompleteRoom();
+        }
+    }
+
+    private void SpawnReward()
+    {
+        int index = Random.Range(0, rewardPrefabs.Length);
+
+        Instantiate(
+            rewardPrefabs[index],
+            rewardSpawnPoint.position,
+            Quaternion.identity
+        );
     }
 }
