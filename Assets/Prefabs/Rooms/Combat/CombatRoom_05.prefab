@@ -812,6 +812,7 @@ MonoBehaviour:
   enemies: []
   roomType: 1
   cameraTarget: {fileID: 3940534962155687052}
+  supportedDoors: 1
   rewardSpawnPoint: {fileID: 7247724667946054878}
   rewardPrefabs:
   - {fileID: 6973710710271490445, guid: 34086378e1829e94ba1aea3fb5c8c8f8, type: 3}

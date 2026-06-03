@@ -12,6 +12,10 @@ public class Room : MonoBehaviour
     public Transform CameraTarget => cameraTarget;
     public RoomData Data;
 
+    [SerializeField]
+    private DoorMask supportedDoors;
+    public DoorMask SupportedDoors => supportedDoors;
+
     private RoomState roomState;
 
 

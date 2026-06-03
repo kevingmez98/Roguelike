@@ -41,8 +41,15 @@ public class DungeonManager : MonoBehaviour
                 roomData.Position.y * roomHeight,
             0);
             roomData.Doors = CalculateDoors(roomData, roomsData);
+            Room prefab = GetRoomPrefab(roomData);
+            if (prefab == null)
+            {
+                Debug.LogError(
+                    $"No prefab found for {roomData.Type} {roomData.Doors}");
+                return;
+            }
             Room room = Instantiate(
-                combatRoomPrefab,
+                prefab,
                 position,
                 Quaternion.identity);
             room.Data = roomData;
@@ -92,5 +99,16 @@ public class DungeonManager : MonoBehaviour
             mask |= DoorMask.Right;
 
         return mask;
+    }
+
+    private Room GetRoomPrefab(RoomData roomData)
+    {
+        Debug.Log(roomData.Type);
+        Debug.Log(roomPrefabs[0].Prefab.roomType);
+        Debug.Log(roomPrefabs[0].Prefab.SupportedDoors);
+        return roomPrefabs.FirstOrDefault(r =>
+            r.Prefab.roomType == roomData.Type &&
+            r.Prefab.SupportedDoors == roomData.Doors)
+            ?.Prefab;
     }
 }

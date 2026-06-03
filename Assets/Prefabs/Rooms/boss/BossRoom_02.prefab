@@ -1586,8 +1586,9 @@ MonoBehaviour:
   doors:
   - {fileID: 0}
   enemies: []
-  roomType: 2
+  roomType: 4
   cameraTarget: {fileID: 3424005699387686044}
+  supportedDoors: 8
   rewardSpawnPoint: {fileID: 2745195077845514012}
   rewardPrefabs: []
 --- !u!114 &8851493350916820738

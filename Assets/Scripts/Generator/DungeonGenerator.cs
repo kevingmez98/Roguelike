@@ -24,7 +24,7 @@ public class DungeonGenerator
         rooms.Add(new RoomData
         {
             Position = new Vector2Int(0, 2),
-            Type = RoomType.Boss
+            Type = RoomType.Combat
         });
 
                 rooms.Add(new RoomData
