@@ -10,6 +10,7 @@ public class Room : MonoBehaviour
 
     public Transform cameraTarget;
     public Transform CameraTarget => cameraTarget;
+    public RoomData Data;
 
     private RoomState roomState;
 
@@ -60,7 +61,11 @@ public class Room : MonoBehaviour
         {
             case RoomState.Unvisited:
                 roomState = RoomState.Active;
-
+                if (roomType == RoomType.Start)
+                {
+                    OpenDoors();
+                    break;
+                }
                 CloseDoors();
                 ActivateEnemies();
                 Debug.Log("Combat started");
