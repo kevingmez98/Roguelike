@@ -6,17 +6,26 @@ public class Door : MonoBehaviour
     [SerializeField] private Collider2D col;
 
     [SerializeField] private DoorDirection direction;
+    public DoorDirection Direction => direction;
 
     [SerializeField] private Collider2D blockCollider;
 
     [Header("Room Connection")]
-    [SerializeField] private Room targetRoom;
-
     [SerializeField] private Transform spawnPoint;
 
+    public Transform SpawnPoint => spawnPoint;
+
+    // Habitación a la que pertenece
+    private Room room;
+
+
+    private void Awake()
+    {
+        room = GetComponentInParent<Room>();
+    }
     public void Open()
     {
-         blockCollider.enabled = false;
+        blockCollider.enabled = false;
     }
 
     public void Close()
@@ -24,26 +33,13 @@ public class Door : MonoBehaviour
         blockCollider.enabled = true;
     }
 
- private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
 
         if (!other.CompareTag("Player"))
             return;
 
-        if (targetRoom == null || spawnPoint == null)
-        {
-            Debug.LogWarning($"Door {name} is missing references.");
-            return;
-        }
-
-        other.transform.position = spawnPoint.position;
-
-        Camera.main.transform.position = new Vector3(
-            targetRoom.CameraTarget.position.x,
-            targetRoom.CameraTarget.position.y,
-            Camera.main.transform.position.z
-        );
-
-        targetRoom.OnPlayerEntered();
+        Debug.Log(direction);
+        room.GoToRoom(direction);
     }
 }

@@ -603,36 +603,28 @@ MonoBehaviour:
   - Type: 0
     Doors: 1
     Prefab: {fileID: 3324204717632256071, guid: 5fd6167aa1fee5f418dd7763a1349013, type: 3}
-  - Type: 0
-    Doors: 0
+  - Type: 1
+    Doors: 4
     Prefab: {fileID: 1050068124720621312, guid: 5ee2e647989614c4ead14998244e413e, type: 3}
-  - Type: 0
-    Doors: 0
+  - Type: 1
+    Doors: 8
     Prefab: {fileID: 6075228748496542147, guid: 1e41c82be88d99746b4b988cdcd8c363, type: 3}
-  - Type: 0
+  - Type: 1
     Doors: 0
     Prefab: {fileID: 6528121055642622332, guid: 336d059513bfa2d4daad9ab6ef9a39ab, type: 3}
-  - Type: 0
-    Doors: 0
+  - Type: 1
+    Doors: -1
     Prefab: {fileID: 4826108326342858691, guid: 3795db936bf17ba48b95c78b2ccc9b86, type: 3}
-  - Type: 0
-    Doors: 0
+  - Type: 1
+    Doors: 1
     Prefab: {fileID: 8826371008425565607, guid: 50007b7af0b075c45b45469c2630bf68, type: 3}
   - Type: 0
-    Doors: 0
-    Prefab: {fileID: 6455654477900217514, guid: 1fab14ba528bf1942a7a7d106fa9721d, type: 3}
-  - Type: 0
-    Doors: 0
-    Prefab: {fileID: 2105670748241863818, guid: be0e5487e3fdc334b9c6733e1bde136a, type: 3}
-  - Type: 0
-    Doors: 0
-    Prefab: {fileID: 2799220601213463144, guid: 98895fd88cc984949963c43c759b09c3, type: 3}
-  - Type: 0
-    Doors: 0
+    Doors: 10
     Prefab: {fileID: 4315985072604843312, guid: cbcb89bf399a51f409bd107da27aa7b2, type: 3}
   - Type: 0
-    Doors: 0
+    Doors: 4
     Prefab: {fileID: 5270499572164650844, guid: 7428bea066f44cc4e9a53c66c82bf82a, type: 3}
+  player: {fileID: 72480872}
 --- !u!4 &2077117285
 Transform:
   m_ObjectHideFlags: 0

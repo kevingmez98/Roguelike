@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 public class Room : MonoBehaviour
 {
     [Header("References")]
@@ -25,14 +26,33 @@ public class Room : MonoBehaviour
     [SerializeField]
     private GameObject[] rewardPrefabs;
 
+    private DungeonManager dungeonManager;
+
+    // Al inicializar solicita el dungeon manager para el cambio entre salas
+    public void Initialize(DungeonManager manager)
+    {
+        dungeonManager = manager;
+    }
+
     private void Awake()
     {
         RegisterEnemies();
+        if (roomType == RoomType.Start)
+        {
+            roomState = RoomState.Cleared;
+        }
         roomState = RoomState.Unvisited;
+
     }
 
     private void Start()
     {
+
+        foreach (Enemy enemy in enemies)
+        {
+            enemy.gameObject.SetActive(false);
+        }
+
         if (roomType != RoomType.Start)
             return;
 
@@ -53,7 +73,6 @@ public class Room : MonoBehaviour
         foreach (Enemy enemy in roomEnemies)
         {
             enemies.Add(enemy);
-
             enemy.SetRoom(this);
         }
 
@@ -72,18 +91,17 @@ public class Room : MonoBehaviour
                 }
                 CloseDoors();
                 ActivateEnemies();
-                Debug.Log("Combat started");
 
                 break;
 
             case RoomState.Active:
 
                 CloseDoors();
-
+                CheckCompletion();
                 break;
 
             case RoomState.Cleared:
-
+                CheckCompletion();
                 break;
         }
 
@@ -92,8 +110,6 @@ public class Room : MonoBehaviour
     public void EnemyDied(Enemy enemy)
     {
         enemies.Remove(enemy);
-
-        Debug.Log("Enemy defeated");
 
         CheckCompletion();
     }
@@ -105,8 +121,6 @@ public class Room : MonoBehaviour
         OpenDoors();
 
         SpawnReward();
-
-        Debug.Log("Room completed");
     }
 
     private void CloseDoors()
@@ -142,6 +156,8 @@ public class Room : MonoBehaviour
 
     private void SpawnReward()
     {
+        if (rewardPrefabs == null || rewardPrefabs.Length == 0)
+            return;
         int index = Random.Range(0, rewardPrefabs.Length);
 
         Instantiate(
@@ -149,5 +165,17 @@ public class Room : MonoBehaviour
             rewardSpawnPoint.position,
             Quaternion.identity
         );
+    }
+
+    public void GoToRoom(DoorDirection direction)
+    {
+        dungeonManager.ChangeRoom(this, direction);
+    }
+
+    // Traer la referencia de una puerta según una dirección
+    public Door GetDoor(DoorDirection direction)
+    {
+        return doors.FirstOrDefault(
+            d => d.Direction == direction);
     }
 }

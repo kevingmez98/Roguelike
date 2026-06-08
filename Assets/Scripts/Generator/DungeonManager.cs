@@ -18,6 +18,12 @@ public class DungeonManager : MonoBehaviour
 
     [SerializeField]
     private List<RoomPrefabEntry> roomPrefabs;
+
+    [SerializeField]
+    private Transform player;
+    // Lista de room instanciadas
+    private Dictionary<Vector2Int, Room> spawnedRooms =
+    new();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -54,8 +60,16 @@ public class DungeonManager : MonoBehaviour
                 Quaternion.identity);
             room.Data = roomData;
 
+            // Pasar referencia al dungeon manager
+            room.Initialize(this);
+
             Debug.Log(
     $"{roomData.Position} - {roomData.Doors}");
+
+            // Agregar sala a la lista
+            spawnedRooms.Add(
+            roomData.Position,
+            room);
         }
     }
 
@@ -103,12 +117,69 @@ public class DungeonManager : MonoBehaviour
 
     private Room GetRoomPrefab(RoomData roomData)
     {
-        Debug.Log(roomData.Type);
-        Debug.Log(roomPrefabs[0].Prefab.roomType);
-        Debug.Log(roomPrefabs[0].Prefab.SupportedDoors);
         return roomPrefabs.FirstOrDefault(r =>
             r.Prefab.roomType == roomData.Type &&
             r.Prefab.SupportedDoors == roomData.Doors)
             ?.Prefab;
+    }
+
+    public void ChangeRoom(Room currentRoom, DoorDirection direction)
+    {
+        // Dar un valor para moverse en la coordenada segun el enum y la dirección dada
+        Vector2Int offset = direction switch
+        {
+            DoorDirection.Top => Vector2Int.up,
+            DoorDirection.Bottom => Vector2Int.down,
+            DoorDirection.Left => Vector2Int.left,
+            DoorDirection.Right => Vector2Int.right,
+            _ => Vector2Int.zero
+        };
+        Vector2Int targetPos =
+               currentRoom.Data.Position + offset;
+
+        if (spawnedRooms.TryGetValue(
+                targetPos,
+                out Room targetRoom))
+        {
+            Debug.Log(
+                $"Moving to {targetRoom.Data.Position}");
+
+            // Obtener dirección de la puerta de la sala destino usando el opuesto de la sala actual
+            DoorDirection entranceDirection = GetOpposite(direction);
+
+            // Obtener punto de spawn de la puerta destino
+            Door entranceDoor = targetRoom.GetDoor(entranceDirection);
+            Transform spawn = entranceDoor.SpawnPoint;
+
+            // Mover camara
+            Camera.main.transform.position = new Vector3(
+                targetRoom.CameraTarget.position.x,
+                targetRoom.CameraTarget.position.y,
+                Camera.main.transform.position.z);
+
+            // Mover jugador y activar sala
+            player.transform.position =
+                spawn.position;
+            targetRoom.OnPlayerEntered();
+        }
+        else
+        {
+            Debug.LogError(
+                $"No room found at {targetPos}");
+        }
+    }
+
+    // Traer la puerta opuesta a una dirección
+    private DoorDirection GetOpposite(
+    DoorDirection direction)
+    {
+        return direction switch
+        {
+            DoorDirection.Top => DoorDirection.Bottom,
+            DoorDirection.Bottom => DoorDirection.Top,
+            DoorDirection.Left => DoorDirection.Right,
+            DoorDirection.Right => DoorDirection.Left,
+            _ => direction
+        };
     }
 }
