@@ -33,6 +33,11 @@ public class DungeonManager : MonoBehaviour
         List<RoomData> rooms =
             generator.GenerateDungeon();
 
+        Debug.Log("Salas solicitadas:---");
+        foreach (RoomData roomData in rooms)
+        {
+            Debug.Log(roomData.toString());
+        }
         SpawnRooms(rooms);
     }
 

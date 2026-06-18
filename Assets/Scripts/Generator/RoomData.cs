@@ -5,4 +5,11 @@ public class RoomData
     public RoomType Type;
 
     public DoorMask Doors; //Indicar direcciones de puertas
+
+    public string toString()
+    {
+        string pos = "pos:"+this.Position;
+        string doors = "doors:" + this.Doors;
+        return pos+doors;
+    }
 }

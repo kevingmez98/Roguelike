@@ -610,7 +610,7 @@ MonoBehaviour:
     Doors: 8
     Prefab: {fileID: 6075228748496542147, guid: 1e41c82be88d99746b4b988cdcd8c363, type: 3}
   - Type: 1
-    Doors: 0
+    Doors: 3
     Prefab: {fileID: 6528121055642622332, guid: 336d059513bfa2d4daad9ab6ef9a39ab, type: 3}
   - Type: 1
     Doors: -1
@@ -621,9 +621,21 @@ MonoBehaviour:
   - Type: 0
     Doors: 10
     Prefab: {fileID: 4315985072604843312, guid: cbcb89bf399a51f409bd107da27aa7b2, type: 3}
-  - Type: 0
+  - Type: 4
     Doors: 4
     Prefab: {fileID: 5270499572164650844, guid: 7428bea066f44cc4e9a53c66c82bf82a, type: 3}
+  - Type: 4
+    Doors: 4
+    Prefab: {fileID: 5270499572164650844, guid: 7428bea066f44cc4e9a53c66c82bf82a, type: 3}
+  - Type: 4
+    Doors: 4
+    Prefab: {fileID: 5270499572164650844, guid: 7428bea066f44cc4e9a53c66c82bf82a, type: 3}
+  - Type: 0
+    Doors: 8
+    Prefab: {fileID: 9105476094704932546, guid: 40ea3f6ef2cd497458278208b7e2bf9b, type: 3}
+  - Type: 0
+    Doors: 9
+    Prefab: {fileID: 867220678950463998, guid: 6e185a40b8482d944a3977fac02957a5, type: 3}
   player: {fileID: 72480872}
 --- !u!4 &2077117285
 Transform:
