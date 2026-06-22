@@ -33,7 +33,6 @@ public class DungeonManager : MonoBehaviour
         List<RoomData> rooms =
             generator.GenerateDungeon();
 
-        Debug.Log("Salas solicitadas:---");
         foreach (RoomData roomData in rooms)
         {
             Debug.Log(roomData.toString());
@@ -64,6 +63,9 @@ public class DungeonManager : MonoBehaviour
                 position,
                 Quaternion.identity);
             room.Data = roomData;
+            // Configurar las puertas de la room paara activar las necesarias
+            room.ConfigureDoors(
+    roomData.Doors);
 
             // Pasar referencia al dungeon manager
             room.Initialize(this);
@@ -123,10 +125,10 @@ public class DungeonManager : MonoBehaviour
     private Room GetRoomPrefab(RoomData roomData)
     {
         return roomPrefabs.FirstOrDefault(r =>
-            r.Prefab.roomType == roomData.Type &&
-            r.Prefab.SupportedDoors == roomData.Doors)
+            r.Prefab.roomType == roomData.Type)
             ?.Prefab;
     }
+
 
     public void ChangeRoom(Room currentRoom, DoorDirection direction)
     {
@@ -173,8 +175,7 @@ public class DungeonManager : MonoBehaviour
                 $"No room found at {targetPos}");
         }
     }
-
-    // Traer la puerta opuesta a una dirección
+    // Traer la dirección opuesta a una dirección
     private DoorDirection GetOpposite(
     DoorDirection direction)
     {

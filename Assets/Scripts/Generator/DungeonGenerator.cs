@@ -26,7 +26,7 @@ public class DungeonGenerator
         occupiedPositions.Add(currentPos);
 
         // Se da una cantidad de salas de combate
-        int combatRooms = 1;
+        int combatRooms = 3;
         int createdRooms = 0;
         // Se eligen las posiciones para cada sala y se agregan a la lista
         while (createdRooms < combatRooms)
@@ -47,15 +47,23 @@ public class DungeonGenerator
             });
 
             // Colocar que ya se agrego la sala
-            occupiedPositions.Add(currentPos);
+            occupiedPositions.Add(nextPos);
             currentPos = nextPos;
             createdRooms++;
         }
 
         // Se agrega la sala final
+        Vector2Int bossPos;
+        Debug.Log("current: ");
+        Debug.Log(currentPos);
+        do
+        {
+            bossPos = currentPos + GetRandomDirection();
+        }
+        while (occupiedPositions.Contains(bossPos));
         rooms.Add(new RoomData
         {
-            Position = currentPos + GetRandomDirection(),
+            Position = bossPos,
             Type = RoomType.Boss
         });
         return rooms;

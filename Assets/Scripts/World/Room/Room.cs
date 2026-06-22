@@ -77,6 +77,35 @@ public class Room : MonoBehaviour
         }
 
     }
+    // Activar o desactivar puertas segun una doormask
+    public void ConfigureDoors(DoorMask doorsMask)
+    {
+        // Recorrer las puertas
+        foreach (Door door in doors)
+        {
+            // Verificar si debe estar activa la puerta segun el doormask dado
+            bool shouldBeActive = door.Direction switch
+            {
+                DoorDirection.Top =>
+                    doorsMask.HasFlag(DoorMask.Up),
+
+                DoorDirection.Bottom =>
+                    doorsMask.HasFlag(DoorMask.Down),
+
+                DoorDirection.Left =>
+                    doorsMask.HasFlag(DoorMask.Left),
+
+                DoorDirection.Right =>
+                    doorsMask.HasFlag(DoorMask.Right),
+
+                _ => false
+            };
+
+            // Activar la puerta si debe ser activada
+            door.gameObject.SetActive(
+                shouldBeActive);
+        }
+    }
     public void OnPlayerEntered()
     {
 
