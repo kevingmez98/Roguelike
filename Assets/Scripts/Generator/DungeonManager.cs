@@ -50,7 +50,7 @@ public class DungeonManager : MonoBehaviour
                 roomData.Position.x * roomWidth,
                 roomData.Position.y * roomHeight,
             0);
-            roomData.Doors = CalculateDoors(roomData, roomsData);
+
             Room prefab = GetRoomPrefab(roomData);
             if (prefab == null)
             {
@@ -80,48 +80,7 @@ public class DungeonManager : MonoBehaviour
         }
     }
 
-    // Calcular direcciones de las puertas del generador. Se podria delegar al generator
-    private DoorMask CalculateDoors(
-        RoomData room,
-        List<RoomData> allRooms)
-    {
-        // Definir mask por defecto
-        DoorMask mask = DoorMask.None;
-
-        // Posición de la room evaluada
-        Vector2Int position = room.Position;
-
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 arriba
-        // En lugar de any se podria hacer un HashSet<Vector2Int> roomPositions;
-        bool hasUp = allRooms.Any(r =>
-            r.Position == position + Vector2Int.up);
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 abajo
-        bool hasDown = allRooms.Any(r =>
-            r.Position == position + Vector2Int.down);
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 izquierda
-        bool hasLeft = allRooms.Any(r =>
-            r.Position == position + Vector2Int.left);
-
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 derecha
-        bool hasRight = allRooms.Any(r =>
-            r.Position == position + Vector2Int.right);
-
-        // Dependiendo de lo encontrado, se van asignando las mask
-        if (hasUp)
-            mask |= DoorMask.Up;
-
-        if (hasDown)
-            mask |= DoorMask.Down;
-
-        if (hasLeft)
-            mask |= DoorMask.Left;
-
-        if (hasRight)
-            mask |= DoorMask.Right;
-
-        return mask;
-    }
-
+  
     private Room GetRoomPrefab(RoomData roomData)
     {
         return roomPrefabs.FirstOrDefault(r =>
