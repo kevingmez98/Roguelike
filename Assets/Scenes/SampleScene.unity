@@ -618,6 +618,9 @@ MonoBehaviour:
   - Type: 4
     Doors: -1
     Prefab: {fileID: 5270499572164650844, guid: 7428bea066f44cc4e9a53c66c82bf82a, type: 3}
+  - Type: 2
+    Doors: -1
+    Prefab: {fileID: 1350004356923944349, guid: e3974d0c517ca3e42b517c254d5ba2ce, type: 3}
   player: {fileID: 72480872}
 --- !u!4 &2077117285
 Transform:

@@ -60,21 +60,6 @@ public class DungeonGenerator
             currentPos = nextPos;
             createdRooms++;
         }
-
-        // Se agrega la sala final
-        Vector2Int bossPos;
-        Debug.Log("current: ");
-        Debug.Log(currentPos);
-        do
-        {
-            bossPos = currentPos + GetRandomDirection();
-        }
-        while (occupiedPositions.Contains(bossPos));
-        rooms.Add(new RoomData
-        {
-            Position = bossPos,
-            Type = RoomType.Boss
-        });
         return rooms;
     }
 
@@ -82,6 +67,7 @@ public class DungeonGenerator
     private void ApplyRules(List<RoomData> rooms)
     {
         AssignBossRoom(rooms);
+        AssignTreasureRoom(rooms);
     }
 
     // Regla para sala de hjefes
@@ -104,51 +90,81 @@ public class DungeonGenerator
             Debug.Log("No hojas disponibles");
             return;
         }
-        /* Se asigna a una dirección de la hoja*/
-        // Todas las direcciones
+        if (!TryAddSpecialRoom(
+               rooms,
+               leaf,
+               RoomType.Boss))
+        {
+            Debug.LogWarning(
+                "Couldn't place boss room.");
+        }
+
+
+    }
+    // Regla para sala de tesoro
+    private void AssignTreasureRoom(List<RoomData> rooms)
+    {
+        RoomData room =
+               rooms
+               .Where(r =>
+                   r.Type == RoomType.Combat)
+               .OrderByDescending(r =>
+                   CountConnections(r, rooms))
+               .FirstOrDefault();
+
+        if (!TryAddSpecialRoom(
+rooms,
+room,
+RoomType.Treasure))
+        {
+            Debug.LogWarning(
+                "Couldn't place treasure room.");
+        }
+    }
+    // Añadir una sala especial
+    private bool TryAddSpecialRoom(
+        List<RoomData> rooms,
+        RoomData baseRoom,
+        RoomType roomType)
+    {
+        if (baseRoom == null)
+            return false;
+        // Lista de posibles direcciones
         Vector2Int[] directions =
-            {
+   {
         Vector2Int.up,
         Vector2Int.down,
         Vector2Int.left,
         Vector2Int.right
     };
 
-        // Por cada direccion
+        // Verificar direcciones posibles
         foreach (Vector2Int direction in directions)
         {
-            // Tomar una posición candidata
             Vector2Int candidate =
-                leaf.Position + direction;
+                baseRoom.Position + direction;
 
-            // Verificar si la posición está ocupada
-            bool occupied =
-                rooms.Any(r =>
-                    r.Position == candidate);
+            bool occupied = rooms.Any(r =>
+                r.Position == candidate);
 
-            // Si no está ocupada se agrega la habitación del jefe
-            if (!occupied)
+            // Si está ocupada seguir buscando
+            if (occupied)
+                continue;
+            // Agregar sala si la posición no está ocupada
+            rooms.Add(new RoomData
             {
-                rooms.Add(new RoomData
-                {
-                    Position = candidate,
-                    Type = RoomType.Boss
-                });
+                Position = candidate,
+                Type = roomType
+            });
 
-                Debug.Log(
-                    $"Boss room added at {candidate}");
+            Debug.Log(
+                $"{roomType} room added at {candidate}");
 
-                return;
-            }
+            return true;
         }
 
+        return false;
     }
-    // Regla para sala de tesoro
-    private void AssignTreasureRoom(List<RoomData> rooms)
-    {
-
-    }
-
     // Activar y desactivar puertas para cada sala
     private void AssignDoors(List<RoomData> rooms)
     {
