@@ -4,6 +4,15 @@ using System.Linq;
 // ¿Qué salas existen y dónde están ubicadas?
 public class DungeonGenerator
 {
+
+    private readonly Vector2Int[] directions =
+{
+    Vector2Int.up,
+    Vector2Int.down,
+    Vector2Int.left,
+    Vector2Int.right
+};
+    // Genera el dungeon completo
     public List<RoomData> GenerateDungeon()
     {
         // Lista de salas
@@ -13,6 +22,7 @@ public class DungeonGenerator
         return rooms;
     }
 
+    // Generar el layout base del dungeon
     private List<RoomData> GenerateLayout()
     {
         // Lista de salas
@@ -63,6 +73,13 @@ public class DungeonGenerator
         return rooms;
     }
 
+    // Obtener una dirección aleatoria
+    private Vector2Int GetRandomDirection()
+    {
+        return directions[
+            Random.Range(0, directions.Length)];
+    }
+
     // Aplicar diferentes reglas
     private void ApplyRules(List<RoomData> rooms)
     {
@@ -73,26 +90,17 @@ public class DungeonGenerator
     // Regla para sala de hjefes
     private void AssignBossRoom(List<RoomData> rooms)
     {
-        // Buscar hojas
-        List<RoomData> leaves =
-      GetLeafRooms(rooms);
+        // Buscar una sala candidata
+        RoomData room =
+    GetExpandableRooms(rooms)
+    .OrderByDescending(r =>
+        Mathf.Abs(r.Position.x) +
+        Mathf.Abs(r.Position.y))
+    .FirstOrDefault();
 
-        // Buscar la hoja mas lejana
-        RoomData leaf =
-         leaves
-         .OrderByDescending(r =>
-             Mathf.Abs(r.Position.x) +
-             Mathf.Abs(r.Position.y))
-         .FirstOrDefault();
-
-        if (leaf == null)
-        {
-            Debug.Log("No hojas disponibles");
-            return;
-        }
         if (!TryAddSpecialRoom(
                rooms,
-               leaf,
+               room,
                RoomType.Boss))
         {
             Debug.LogWarning(
@@ -104,14 +112,13 @@ public class DungeonGenerator
     // Regla para sala de tesoro
     private void AssignTreasureRoom(List<RoomData> rooms)
     {
-        RoomData room =
-               rooms
-               .Where(r =>
-                   r.Type == RoomType.Combat)
-               .OrderByDescending(r =>
-                   CountConnections(r, rooms))
-               .FirstOrDefault();
 
+        RoomData room =
+    GetExpandableRooms(rooms)
+    .OrderByDescending(r =>
+        Mathf.Abs(r.Position.x) +
+        Mathf.Abs(r.Position.y))
+    .FirstOrDefault();
         if (!TryAddSpecialRoom(
 rooms,
 room,
@@ -129,14 +136,7 @@ RoomType.Treasure))
     {
         if (baseRoom == null)
             return false;
-        // Lista de posibles direcciones
-        Vector2Int[] directions =
-   {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right
-    };
+
 
         // Verificar direcciones posibles
         foreach (Vector2Int direction in directions)
@@ -165,6 +165,8 @@ RoomType.Treasure))
 
         return false;
     }
+
+    /* Helpers */
     // Activar y desactivar puertas para cada sala
     private void AssignDoors(List<RoomData> rooms)
     {
@@ -177,67 +179,51 @@ RoomType.Treasure))
     // Calcular direcciones de las puertas del generador para una sala
     private DoorMask CalculateDoors(
     RoomData room,
-    List<RoomData> allRooms)
+    List<RoomData> rooms)
     {
         // Definir mask por defecto
         DoorMask mask = DoorMask.None;
 
-        // Posición de la room evaluada
-        Vector2Int position = room.Position;
+        // Por cada una de las ddirecciones
+        foreach (var direction in directions)
+        {
+            // Si no hay salas en la posición a la que 
+            // apuntaría la nueva posición se continua sin cambiar la mask de esa direccion
+            if (!rooms.Any(r =>
+           r.Position ==
+           room.Position + direction))
+            {
+                continue;
+            }
 
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 arriba
-        // En lugar de any se podria hacer un HashSet<Vector2Int> roomPositions;
-        bool hasUp = allRooms.Any(r =>
-            r.Position == position + Vector2Int.up);
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 abajo
-        bool hasDown = allRooms.Any(r =>
-            r.Position == position + Vector2Int.down);
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 izquierda
-        bool hasLeft = allRooms.Any(r =>
-            r.Position == position + Vector2Int.left);
+            // Si se encontró una sala en la posicion actual+direccion se modifica la mask
+            if (direction == Vector2Int.up)
+                mask |= DoorMask.Up;
 
-        // Verificar si alguna sala se generó en la posición de la evaluada+1 derecha
-        bool hasRight = allRooms.Any(r =>
-            r.Position == position + Vector2Int.right);
+            else if (direction == Vector2Int.down)
+                mask |= DoorMask.Down;
 
-        // Dependiendo de lo encontrado, se van asignando las mask
-        if (hasUp)
-            mask |= DoorMask.Up;
+            else if (direction == Vector2Int.left)
+                mask |= DoorMask.Left;
 
-        if (hasDown)
-            mask |= DoorMask.Down;
-
-        if (hasLeft)
-            mask |= DoorMask.Left;
-
-        if (hasRight)
-            mask |= DoorMask.Right;
-
+            else if (direction == Vector2Int.right)
+                mask |= DoorMask.Right;
+        }
         return mask;
     }
-    private Vector2Int GetRandomDirection()
-    {
-        Vector2Int[] directions =
-        {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right
-    };
 
-        return directions[
-            Random.Range(0, directions.Length)];
-    }
 
-    // Traer todas las hojas
-    private List<RoomData> GetLeafRooms(
-        List<RoomData> rooms)
+    // Traer candidatas a salas expandibles
+    private List<RoomData> GetExpandableRooms(
+    List<RoomData> rooms)
     {
-        // Buscar salas combate que solo tienen 1 vecino
         return rooms
             .Where(r =>
-                CountConnections(r, rooms) == 1 &&
-                r.Type == RoomType.Combat)
+                r.Type == RoomType.Combat &&
+                directions.Any(direction =>
+                    !rooms.Any(other =>
+                        other.Position ==
+                        r.Position + direction)))
             .ToList();
     }
 
@@ -247,31 +233,16 @@ RoomType.Treasure))
     List<RoomData> rooms)
     {
         int connections = 0;
-
-        Vector2Int position = room.Position;
-
-        if (rooms.Any(r =>
-            r.Position == position + Vector2Int.up))
+        // Por cada dirección
+        foreach (var direction in directions)
         {
-            connections++;
-        }
-
-        if (rooms.Any(r =>
-            r.Position == position + Vector2Int.down))
-        {
-            connections++;
-        }
-
-        if (rooms.Any(r =>
-            r.Position == position + Vector2Int.left))
-        {
-            connections++;
-        }
-
-        if (rooms.Any(r =>
-            r.Position == position + Vector2Int.right))
-        {
-            connections++;
+            // Si se encuentra una sala en la posición+ddireccion, se cuenta como conexión
+            if (rooms.Any(r =>
+                r.Position ==
+                room.Position + direction))
+            {
+                connections++;
+            }
         }
 
         return connections;
